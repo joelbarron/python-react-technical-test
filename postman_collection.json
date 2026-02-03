@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Python React Technical Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Transaction (Idempotency-Key)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Idempotency-Key", "value": "demo-123"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/transactions/create",
+          "host": ["{{base_url}}"],
+          "path": ["transactions", "create"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"credit\",\n  \"amount\": \"12.50\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Transaction (client_request_id)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/transactions/create",
+          "host": ["{{base_url}}"],
+          "path": ["transactions", "create"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"debit\",\n  \"amount\": \"5.00\",\n  \"client_request_id\": \"client-abc\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Async Process Transaction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/transactions/async-process",
+          "host": ["{{base_url}}"],
+          "path": ["transactions", "async-process"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transaction_id\": \"{{transaction_id}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "List Transactions",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/transactions/",
+          "host": ["{{base_url}}"],
+          "path": ["transactions", ""]
+        }
+      }
+    },
+    {
+      "name": "Summarize",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "url": {
+          "raw": "{{base_url}}/assistant/summarize",
+          "host": ["{{base_url}}"],
+          "path": ["assistant", "summarize"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Some long text to summarize.\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"},
+    {"key": "transaction_id", "value": ""}
+  ]
+}

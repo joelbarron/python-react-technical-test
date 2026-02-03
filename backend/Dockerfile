@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gosu \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+COPY . /app
+
+RUN adduser --disabled-password --gecos "" --uid 1000 appuser
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "app.asgi:application"]

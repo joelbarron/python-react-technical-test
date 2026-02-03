@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    env_file: .env
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  celery_worker:
+    build: ./backend
+    env_file: .env
+    volumes:
+      - ./backend:/app
+    entrypoint: ["/app/celery_entrypoint.sh"]
+    command: ["celery", "-A", "app", "worker", "-l", "info"]
+    depends_on:
+      - backend
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build: ./frontend
+    env_file: .env
+    environment:
+      VITE_BACKEND_URL: ${BACKEND_BASE_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  rpa:
+    build: ./rpa
+    env_file: .env
+    environment:
+      BACKEND_BASE_URL: http://backend:8000
+    depends_on:
+      - backend
